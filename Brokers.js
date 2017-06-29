@@ -1,7 +1,7 @@
 var Logger = require("pavlism-logger");
 
 //Brokers are a set ob golbal static objects that can broker information between different objects.
-var log = new Logger('Broker.js', CLL.warn);
+var log = new Logger('Broker.js', Logger.level.warn);
 
 Broker = class Broker {
 
@@ -20,7 +20,7 @@ Broker = class Broker {
          * @param triggerArgs {object} The object the will get passed to the listeners callback function as triggerArgs
          */
         //Used to remove a listeneter, used if you only want to listen to an event once
-        static remove = (listener) {
+        static remove (listener) {
             Lib.JS.remove(EventBroker.connection[listener.connection], listener);
         };
 }
@@ -30,10 +30,9 @@ Broker.connections = [];
 
 //The event broker is public static moderator object.  It allows any object to trigger and/or listen to custome events.
 //Events must have unique string names.
+var EBlog = new Logger('EventBroker.js', Logger.level.warn);
 
 EventBroker = class EventBroker extends Broker{
-        var EBlog = new Logger('EventBroker.js', CLL.warn);
-
         /**
          * This will setup a function to fire when the event(s) is triggered
          * 
@@ -46,7 +45,7 @@ EventBroker = class EventBroker extends Broker{
          * @param listenerArgs {object} The object the will get passed to the callback as  listenerArgs
          * @param callback {function} Function to call when event is triggered.
          */
-        listen (events, listenerArgs, callback) {
+        static listen (events, listenerArgs, callback) {
             if (!Lib.JS.isString(events) && !$.isArray(events)) {
                 EBlog.error("The first paramater (events) must be a string or array of strings that represents the event to listen too");
             }
@@ -75,7 +74,7 @@ EventBroker = class EventBroker extends Broker{
             }
         };
 
-        trigger (event, triggerArgs) {
+    static trigger (event, triggerArgs) {
             triggerArgs = Lib.JS.setDefaultParameter(triggerArgs, {});
 
             if (Lib.JS.isUndefined(EventBroker.connections[event]) || EventBroker.connections[event].length === 0) {
@@ -97,10 +96,8 @@ EventBroker = class EventBroker extends Broker{
 
 //The data broker is public static moderator object.  It allows any object to trigger and/or listen to custome data calls.
 //DataCalls must have unique string names.
-var DBlog = new Logger('DataBroker.js', CLL.warn);
+var DBlog = new Logger('DataBroker.js', Logger.level.warn);
 DataBroker = class DataBroker extends Broker{
-        var DBlog = new Logger('DataBroker.js', CLL.warn);
-
         /**
          * This will setup a function to fire when the event(s) is triggered
          * 
@@ -113,7 +110,7 @@ DataBroker = class DataBroker extends Broker{
          * @param listenerArgs {object} The object the will get passed to the callback as  listenerArgs
          * @param callback {function} Function to call when event is triggered.
          */
-        listen (events, listenerArgs, callback) {
+        static listen (events, listenerArgs, callback) {
             if (!Lib.JS.isString(dataCall) && !$.isArray(dataCall)) {
                 DBlog.error("The first paramater (dataCalls) must be a string or array of strings that represents the dataCall to listen too");
             }
@@ -138,7 +135,7 @@ DataBroker = class DataBroker extends Broker{
             }
         };
 
-        trigger (event, triggerArgs) {
+    static trigger (event, triggerArgs) {
             triggerArgs = Lib.JS.setDefaultParameter(triggerArgs, {});
 
             if (Lib.JS.isUndefined(DataBroker.connections[dataCall]) || DataBroker.connections[dataCall].length === 0) {
