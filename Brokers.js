@@ -25,9 +25,6 @@ Broker = class Broker {
         };
 }
 
-Broker.connections = [];
-
-
 //The event broker is public static moderator object.  It allows any object to trigger and/or listen to custome events.
 //Events must have unique string names.
 var EBlog = new Logger('EventBroker.js', Logger.level.warn);
@@ -90,7 +87,7 @@ EventBroker = class EventBroker extends Broker{
             }
         };
 }
-
+EventBroker.connections = [];
 	
 		
 
@@ -110,7 +107,7 @@ DataBroker = class DataBroker extends Broker{
          * @param listenerArgs {object} The object the will get passed to the callback as  listenerArgs
          * @param callback {function} Function to call when event is triggered.
          */
-        static listen (events, listenerArgs, callback) {
+        static listen (dataCall, listenerArgs, callback) {
             if (!Lib.JS.isString(dataCall) && !$.isArray(dataCall)) {
                 DBlog.error("The first paramater (dataCalls) must be a string or array of strings that represents the dataCall to listen too");
             }
@@ -135,7 +132,7 @@ DataBroker = class DataBroker extends Broker{
             }
         };
 
-    static trigger (event, triggerArgs) {
+    static trigger (dataCall, triggerArgs) {
             triggerArgs = Lib.JS.setDefaultParameter(triggerArgs, {});
 
             if (Lib.JS.isUndefined(DataBroker.connections[dataCall]) || DataBroker.connections[dataCall].length === 0) {
@@ -147,4 +144,5 @@ DataBroker = class DataBroker extends Broker{
             return listener.callback(listener.listenerArgs, triggerArgs);
         };
 }
+DataBroker.connections = [];
 module.exports = {DataBroker, EventBroker};
